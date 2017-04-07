@@ -1,0 +1,152 @@
+
+
+import java.util.*;
+
+public class Hanoi 
+{
+       public static int disks=5;//Maximum number of disks that can set for solving
+       public static int counter=0;
+       public static int bar[]=new int[disks];//Storage of disks for bars
+       public static Stack left = new Stack(disks,bar);//Left Bar
+       public static Stack right= new Stack(disks,bar);//Mid Bar
+       public static Stack mid = new Stack(disks,bar);//LeftBar
+       
+    public static void main(String []args)
+    {
+       System.out.println("PLease enter number of disks");// prompt user to enter disks.
+       Scanner input =new Scanner(System.in);
+       disks=input.nextInt();
+      
+       build(left);//initiate problem by stacking disk on the left bar
+       showstep();//show the user the problem to be solved
+       solveStack(disks,left,right,mid);//solve the problem while showing each step
+
+       System.out.println('\n'+"Number of disks: "+disks);
+       System.out.println("Total moves: "+counter);
+   
+    }
+
+        public static void build(Stack a)//initialises the tower problem
+        {
+            for(int i=disks;i>=1;i--)
+            {
+                a.push(i);
+            }    
+        }
+        public static void solveStack(int n,Stack x,Stack y,Stack z)//solve the tower problem by recursion
+        {
+            if(n>0)//method repeats itself until both the LeftBar and MidBar have no disks 
+            {   
+                if(checkstep(x,y)==false)//makes sure no disk is plced on smaller one
+                {
+                solveStack(n-1,z,x,y);
+                int onmove=x.pop();
+                z.push(onmove);
+                showstep();
+                counter++;//count every step taken
+                solveStack(n-1,x,z,y);
+                }else
+                {
+                    System.out.println("Error!! Big disk can't be placed on smaller one");
+                }
+            }
+        }
+        public static void showstep()//show each step taken
+        {
+                System.out.println("");
+                for(int i = disks-1; i>=0; i--)
+         {
+             display(left.Bar,i);
+             display(mid.Bar,i);
+             display(right.Bar,i);
+             
+                System.out.println("");
+         }
+                System.out.println(" Step :"+(counter+1)+"    ------------------------------------------------------------------------------------");
+                System.out.println("");
+         try
+         {
+                Thread.sleep(500);
+         }catch(InterruptedException e){ System.out.println("Error!! "+e);}
+     }
+       public static void display(int[] Bar, int n)// Show nth level of Bar
+     { 
+       int size = Bar[n];
+       System.out.print("                 ");
+       for(int i = disks; i>size ; i--)
+        {
+             System.out.print(" ");
+        }
+         for(int i = 0; i<size; i++)
+        {
+             System.out.print("=");
+        }
+         System.out.print("||");
+         for(int i = 0; i<size; i++)
+        {
+            System.out.print("=");
+        }
+         for(int i = disks; i>size ; i--)
+        {
+             System.out.print(" ");
+        }
+     }
+       public static boolean checkstep(Stack x,Stack y)//make sure a bigger disk is not placed on smaller one
+       {
+           int xtop;
+           int ytop;
+           int i=x.Bar.length-1,j=y.Bar.length-1;
+           xtop=x.Bar[i];ytop=y.Bar[j];
+           if(xtop<ytop)
+           {
+               return true;
+           }else
+           {
+               return false;
+           }
+       }
+}
+class Stack 
+{
+    public static int num;
+    int[] Bar;
+    int topdisk;
+    int zero=0;
+  
+    Stack(int n,int[] tow)
+    {
+        num = n;
+        topdisk = -1;
+        tow = new int[num];
+        Bar=tow; 
+    }
+    void push(int a)//pushes disk into storage
+    {
+        if(topdisk==num-1)
+        {
+            System.out.println("Stack overflow");  
+        }else
+        {
+            Bar[++topdisk]=a;
+        }
+    }
+    int pop()//Pops disks from storage and retains them
+    {
+        if(topdisk<0)
+        {
+            System.out.println("Stack underflow");
+            return 0;
+        }else
+        {
+            int totake=Bar[topdisk];
+            Bar[topdisk--]=0; //destroy disk from initial storage
+            
+            return totake;   
+        }
+    }
+}
+  
+       
+
+
+
